@@ -8,8 +8,8 @@
 1. Run `symfony serve` to run the project.
 
 ## Fetching Data from API from CLI
-This command function will fetch 100 users from https://randomuser.me
+#### This command function will fetch 100 users from https://randomuser.me
 `php bin/console cron:fetch-customers`
 
-Adding `count` option to define the number of users to be fetch from API
+#### Adding `count` as an option to define the number of users to be fetch from API
 `php bin/console cron:fetch-customers --count=10`
