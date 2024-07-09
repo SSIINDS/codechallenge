@@ -10,15 +10,23 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class CustomersService
 {
 
-    private $customers;
-    public function __construct(
-        private HttpClientInterface $client,
-        private Customers $Customers,
-        private ManagerRegistry $doctrine,
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $userPasswordHasher
-    ) {
+    protected $customers;
+    protected $client; 
+    protected $doctrine; 
+    protected $entityManager; 
+    protected $userPasswordHasher; 
 
+    public function __construct(
+        HttpClientInterface $HttpClientInterface,
+        Customers $Customers,
+        ManagerRegistry $ManagerRegistry,
+        EntityManagerInterface $EntityManagerInterface,
+        UserPasswordHasherInterface $UserPasswordHasherInterface
+    ) {
+        $this->client = $HttpClientInterface;
+        $this->doctrine = $ManagerRegistry;
+        $this->entityManager = $EntityManagerInterface;
+        $this->userPasswordHasher = $UserPasswordHasherInterface;
         $this->customers = $this->entityManager->getRepository($Customers::class);
     }
 
@@ -87,8 +95,8 @@ class CustomersService
     {
         
     }
-    public function list(): array
+    public function list()
     {
-        
+        return $this->customers->findCustomers();
     }
 }

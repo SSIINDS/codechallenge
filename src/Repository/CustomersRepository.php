@@ -31,13 +31,10 @@ class CustomersRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Customers
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+       public function findCustomers()
+       {
+            $q = $this->createQueryBuilder('u');
+            $q->select('u.id, CONCAT(u.FirstName, \' \', u.LastName) as FullName, u.Email, u.Country');
+            return $q->getQuery()->getArrayResult();
+       }
 }

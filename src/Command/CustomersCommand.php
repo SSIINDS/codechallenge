@@ -21,19 +21,19 @@ use App\Service\CustomersService;
 )]
 class CustomersCommand extends Command
 {
+
+    protected $customerService;
+   
     public function __construct(
-        private CustomersService $CustomersService
+        CustomersService $CustomersService
     ){
         parent::__construct();
+        $this->customerService = $CustomersService;
     }
-
-
 
     protected function configure(): void
     {
-        $this
-            ->addOption('count',null, InputArgument::OPTIONAL, 'Number of Customers?',100)
-        ;
+        $this->addOption('count',null, InputArgument::OPTIONAL, 'Number of Customers?',100);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -41,7 +41,7 @@ class CustomersCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $count = $input->getOption('count')?? 100;
-        $result = $this->CustomersService->fetch($count);
+        $result = $this->customerService->fetch($count);
         if($result['status']){
             $io->success($result['message']);
         } else {

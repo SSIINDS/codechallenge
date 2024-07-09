@@ -10,19 +10,22 @@ use App\Service\CustomersService;
 
 class CustomersController extends AbstractController
 {
+
+    protected $customerService;
    
     public function __construct(
-        private CustomersService $CustomersService
+        CustomersService $CustomersService
     ){
-        parent::__construct();
+        $this->customerService = $CustomersService;
     }
 
     #[Route('/customers', name: 'app_customers')]
     public function index(): JsonResponse
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/CustomersController.php',
+            "status"    => true,
+            "data"      => $this->customerService->list(),
+            "message"   => ""
         ]);
     }
 }
