@@ -5,6 +5,7 @@ use App\Entity\Customers;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CustomersService
 {
@@ -14,7 +15,8 @@ class CustomersService
         private HttpClientInterface $client,
         private Customers $Customers,
         private ManagerRegistry $doctrine,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private UserPasswordHasherInterface $userPasswordHasher
     ) {
 
         $this->customers = $this->entityManager->getRepository($Customers::class);
@@ -49,7 +51,12 @@ class CustomersService
                 $customer->setLastName($user['name']['last']);
                 $customer->setEmail($user['email']);
                 $customer->setUsername($user['login']['username']);
-                $customer->setPassword($user['login']['password']);
+                $customer->setPassword(
+                    $this->userPasswordHasher->hashPassword(
+                        $customer,
+                        $user['login']['password']
+                    )
+                );
                 $customer->setGender($user['gender']);
                 $customer->setCountry($user['location']['country']);
                 $customer->setCity($user['location']['city']);
