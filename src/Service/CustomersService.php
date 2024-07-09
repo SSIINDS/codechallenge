@@ -91,12 +91,12 @@ class CustomersService
             "message"   => "$result Customers has been successfully saved."
         ];
     }
-    public function read(): array
+    public function read($id): array
     {
-        
+        return $this->customers->getCustomers($id);
     }
     public function list()
     {
-        return $this->customers->findCustomers();
+        return $this->customers->getCustomers();
     }
 }

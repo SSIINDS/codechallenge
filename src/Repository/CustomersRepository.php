@@ -31,10 +31,15 @@ class CustomersRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-       public function findCustomers()
+       public function getCustomers($id = null)
        {
             $q = $this->createQueryBuilder('u');
             $q->select('u.id, CONCAT(u.FirstName, \' \', u.LastName) as FullName, u.Email, u.Country');
+            if($id){
+                $q->select('u.id, CONCAT(u.FirstName, \' \', u.LastName) as FullName, u.Email, u.Country, u.Username, u.Gender, u.City, u.Phone');
+                $q->andWhere('u.id = :id');
+                $q->setParameter('id', $id);
+            }
             return $q->getQuery()->getArrayResult();
        }
 }

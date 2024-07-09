@@ -19,12 +19,22 @@ class CustomersController extends AbstractController
         $this->customerService = $CustomersService;
     }
 
-    #[Route('/customers', name: 'app_customers')]
-    public function index(): JsonResponse
+    #[Route('/customers', name: 'app_customer_list')]
+    public function app_customer_list(): JsonResponse
     {
         return $this->json([
             "status"    => true,
             "data"      => $this->customerService->list(),
+            "message"   => ""
+        ]);
+    }
+
+    #[Route('/customers/{id}', name: 'app_customer_details')]
+    public function customer_details($id): JsonResponse
+    {
+        return $this->json([
+            "status"    => true,
+            "data"      => $this->customerService->read($id),
             "message"   => ""
         ]);
     }
