@@ -73,5 +73,5 @@
 }
 ```
 
-## PHPUnit Test
+## Run PHPUnit Test
 `php bin/phpunit`
