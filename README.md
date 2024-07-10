@@ -72,3 +72,6 @@
   "message": ""
 }
 ```
+
+## PHPUnit Test
+`php bin/phpunit`
