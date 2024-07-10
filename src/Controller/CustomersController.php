@@ -22,7 +22,7 @@ class CustomersController extends AbstractController
     #[Route('/customers', name: 'app_customer_list')]
     public function app_customer_list(): JsonResponse
     {
-        return $this->json([
+        return new JsonResponse([
             "status"    => true,
             "data"      => $this->customerService->list(),
             "message"   => ""
@@ -32,7 +32,14 @@ class CustomersController extends AbstractController
     #[Route('/customers/{id}', name: 'app_customer_details')]
     public function customer_details($id): JsonResponse
     {
-        return $this->json([
+        $customer = $this->customerService->read($id);
+        if(!$customer){
+            return new JsonResponse([
+                "status"    => false,
+                "message"   => "Customer not found."
+            ]);
+        }
+        return new JsonResponse([
             "status"    => true,
             "data"      => $this->customerService->read($id),
             "message"   => ""
