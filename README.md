@@ -17,5 +17,40 @@
 ## Getting list of Customers
 `https://127.0.0.1:8000/customers`
 
+#### Sample Response
+```json
+{
+  "status": true,
+  "data": [
+    {
+      "id": 1,
+      "FullName": "Cameron Morrison",
+      "Email": "cameron.morrison@example.com",
+      "Country": "Australia"
+    },
+    {
+      "id": 2,
+      "FullName": "Fred Weaver",
+      "Email": "fred.weaver@example.com",
+      "Country": "Australia"
+    },
+    {
+      "id": 3,
+      "FullName": "Jennie Hernandez",
+      "Email": "jennie.hernandez@example.com",
+      "Country": "Australia"
+    },
+    .......
+    {
+      "id": 100,
+      "FullName": "Jim Mccoy",
+      "Email": "jim.mccoy@example.com",
+      "Country": "Australia"
+    }
+  ],
+  "message": ""
+}
+```
+
 ## Getting Customer Details
 `https://127.0.0.1:8000/customers/1`
