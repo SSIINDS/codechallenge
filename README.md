@@ -15,7 +15,7 @@
 `php bin/console cron:fetch-customers --count=10`
 
 ## Getting list of Customers
-`https://127.0.0.1:8000/customers`
+[https://127.0.0.1:8000/customers](https://127.0.0.1:8000/customers)
 
 #### Sample Response
 ```json
@@ -53,4 +53,22 @@
 ```
 
 ## Getting Customer Details
-`https://127.0.0.1:8000/customers/1`
+[https://127.0.0.1:8000/customers/1](https://127.0.0.1:8000/customers/1)
+
+#### Sample Response
+```json
+{
+  "status": true,
+  "data": {
+    "id": 1,
+    "FullName": "Cameron Morrison",
+    "Email": "cameron.morrison@example.com",
+    "Country": "Australia",
+    "Username": "heavykoala839",
+    "Gender": "male",
+    "City": "Rockhampton",
+    "Phone": "03-4557-1793"
+  },
+  "message": ""
+}
+```
