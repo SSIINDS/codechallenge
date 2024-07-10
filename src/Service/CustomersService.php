@@ -12,7 +12,7 @@ class CustomersService
 
     protected $customers;
     protected $client; 
-    protected $doctrine; 
+    protected $managerRegistry; 
     protected $entityManager; 
     protected $userPasswordHasher; 
 
@@ -24,37 +24,59 @@ class CustomersService
         UserPasswordHasherInterface $UserPasswordHasherInterface
     ) {
         $this->client = $HttpClientInterface;
-        $this->doctrine = $ManagerRegistry;
+        $this->managerRegistry = $ManagerRegistry;
         $this->entityManager = $EntityManagerInterface;
         $this->userPasswordHasher = $UserPasswordHasherInterface;
         $this->customers = $this->entityManager->getRepository($Customers::class);
     }
 
-    public function fetch($result = 10): array
+    public function getRandomUsers($count)
     {
         $response = $this->client->request(
             'GET',
-            "https://randomuser.me/api/?nat=au&results=$result"
+            "https://randomuser.me/api/?nat=au&results=$count"
         );
 
         $statusCode = $response->getStatusCode();
         if($statusCode != 200){
+            return false;
+        }
+
+        $content = $response->getContent();
+        $content = $response->toArray();
+        return $content['results'];
+    }
+
+    public function fetch($count = 10): array
+    {
+        
+        $users = $this->getRandomUsers($count);
+        if(!$users){
             return [
                 "status"    => false,
                 "message"   => "API Error Response"
             ];
         }
-
-        $content = $response->getContent();
-        $content = $response->toArray();
-        $users = $content['results'];
-
-        $em = $this->doctrine->getManager();
+        $em = $this->managerRegistry->getManager();
         $em->getConnection()->beginTransaction();
         $em->getConnection()->setAutoCommit(false);
         try {
             foreach ($users as $key => $user) {
-                $customer = $this->customers->findOneBy(["Email" => $user['email']]) ?? new Customers;
+                if(
+                    !array_key_exists("email", $user) ||
+                    !array_key_exists("name", $user) ||
+                    !array_key_exists("login", $user) ||
+                    !array_key_exists("gender", $user) ||
+                    !array_key_exists("location", $user) ||
+                    !array_key_exists("phone", $user) 
+                ){
+                    return [
+                        "status"    => false,
+                        "message"   => "Invalid RandomUser API Response"
+                    ];
+                }
+                $entity = $this->customers->findOneBy(["Email" => $user['email']]);
+                $customer = $entity ? $entity : new Customers();
                 $customer->setFirstName($user['name']['first']);
                 $customer->setLastName($user['name']['last']);
                 $customer->setEmail($user['email']);
@@ -69,9 +91,7 @@ class CustomersService
                 $customer->setCountry($user['location']['country']);
                 $customer->setCity($user['location']['city']);
                 $customer->setPhone($user['phone']);
-                $this->customers->findOneBy(["Email" => $user['email']]) 
-                ? $customer->setUpdateDate() 
-                : $customer->setCreateDate();
+                $entity ? $customer->setUpdateDate() : $customer->setCreateDate();
 
                 $em->persist($customer);
                 $em->flush();
@@ -88,13 +108,15 @@ class CustomersService
 
         return [
             "status"    => true,
-            "message"   => "$result Customers has been successfully saved."
+            "message"   => "$count Customers has been successfully saved."
         ];
     }
-    public function read($id): array
+
+    public function read($id)
     {
         return $this->customers->getCustomers($id);
     }
+    
     public function list()
     {
         return $this->customers->getCustomers();
